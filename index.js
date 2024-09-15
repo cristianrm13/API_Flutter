@@ -1,37 +1,35 @@
 const express = require('express');
-const app = express();
-const port = 3000;
+const cors = require('cors'); // Para permitir las solicitudes desde tu app Flutter
 
-// Middleware para interpretar el body como JSON
+const app = express();
+
+// Middleware para permitir CORS (importante si haces peticiones desde Flutter)
+app.use(cors());
+
+// Middleware para parsear JSON
 app.use(express.json());
 
-// Simulamos una base de datos con un arreglo
-let nombres = ['Juan', 'Maria', 'Carlos'];
-
-// Ruta POST para agregar un nombre
-app.post('/api/nombres', (req, res) => {
-  const { name } = req.body;
-
-  if (name) {
-    nombres.push(name); // Agregar el nombre al arreglo
-    res.status(201).json({
-      message: `Nombre recibido: ${name}`,
-      nombres, // Devolvemos la lista actualizada
-    });
-  } else {
-    res.status(400).json({ message: 'Nombre no proporcionado' });
-  }
-});
-
-// Ruta GET para obtener la lista de nombres
+// Ruta GET de ejemplo
 app.get('/api/nombres', (req, res) => {
-  res.status(200).json({
+  res.json({
     message: 'Lista de nombres obtenida con éxito',
-    nombres, // Devolvemos la lista de nombres
+    nombres: ['Juan', 'Maria', 'Carlos']
   });
 });
 
+// Ruta POST de ejemplo (opcional)
+app.post('/api/nombres', (req, res) => {
+  const { name } = req.body;
+  res.json({
+    message: `Nombre ${name} recibido con éxito`,
+    nombre: name
+  });
+});
+
+// Puerto dinámico proporcionado por Railway o puerto 3000 si está corriendo localmente
+const PORT = process.env.PORT || 3000;
+
 // Iniciar el servidor
-app.listen(port, () => {
-  console.log(`Servidor escuchando en http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
